@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.loginPanel = new System.Windows.Forms.Panel();
             this.connectBtn = new System.Windows.Forms.Button();
             this.portTextBox = new System.Windows.Forms.TextBox();
@@ -40,10 +42,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.localTreeView = new System.Windows.Forms.TreeView();
-            this.remoteTreeView = new System.Windows.Forms.TreeView();
             this.label5 = new System.Windows.Forms.Label();
+            this.localTreeView = new System.Windows.Forms.TreeView();
+            this.iconList = new System.Windows.Forms.ImageList(this.components);
             this.label6 = new System.Windows.Forms.Label();
+            this.remoteTreeView = new System.Windows.Forms.TreeView();
             this.loginPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -175,20 +178,6 @@
             this.splitContainer1.SplitterDistance = 242;
             this.splitContainer1.TabIndex = 0;
             // 
-            // localTreeView
-            // 
-            this.localTreeView.Location = new System.Drawing.Point(2, 25);
-            this.localTreeView.Name = "localTreeView";
-            this.localTreeView.Size = new System.Drawing.Size(235, 377);
-            this.localTreeView.TabIndex = 0;
-            // 
-            // remoteTreeView
-            // 
-            this.remoteTreeView.Location = new System.Drawing.Point(4, 25);
-            this.remoteTreeView.Name = "remoteTreeView";
-            this.remoteTreeView.Size = new System.Drawing.Size(473, 377);
-            this.remoteTreeView.TabIndex = 0;
-            // 
             // label5
             // 
             this.label5.AutoSize = true;
@@ -198,6 +187,25 @@
             this.label5.TabIndex = 1;
             this.label5.Text = "Local Files";
             // 
+            // localTreeView
+            // 
+            this.localTreeView.ImageIndex = 0;
+            this.localTreeView.ImageList = this.iconList;
+            this.localTreeView.Location = new System.Drawing.Point(2, 25);
+            this.localTreeView.Name = "localTreeView";
+            this.localTreeView.SelectedImageKey = "Generic.ico";
+            this.localTreeView.Size = new System.Drawing.Size(235, 377);
+            this.localTreeView.TabIndex = 0;
+            this.localTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.localTreeView_NodeMouseDoubleClick);
+            // 
+            // iconList
+            // 
+            this.iconList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("iconList.ImageStream")));
+            this.iconList.TransparentColor = System.Drawing.Color.Transparent;
+            this.iconList.Images.SetKeyName(0, "Generic.ico");
+            this.iconList.Images.SetKeyName(1, "");
+            this.iconList.Images.SetKeyName(2, "text_x_log.ico");
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -206,6 +214,18 @@
             this.label6.Size = new System.Drawing.Size(68, 13);
             this.label6.TabIndex = 2;
             this.label6.Text = "Remote Files";
+            // 
+            // remoteTreeView
+            // 
+            this.remoteTreeView.ImageIndex = 0;
+            this.remoteTreeView.ImageList = this.iconList;
+            this.remoteTreeView.Location = new System.Drawing.Point(4, 25);
+            this.remoteTreeView.Name = "remoteTreeView";
+            this.remoteTreeView.SelectedImageIndex = 0;
+            this.remoteTreeView.ShowRootLines = false;
+            this.remoteTreeView.Size = new System.Drawing.Size(473, 377);
+            this.remoteTreeView.TabIndex = 0;
+            this.remoteTreeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.remoteTreeView_MouseDoubleClick);
             // 
             // Form1
             // 
@@ -249,6 +269,7 @@
         private System.Windows.Forms.TreeView remoteTreeView;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ImageList iconList;
     }
 }
 

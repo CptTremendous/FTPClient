@@ -15,6 +15,7 @@ namespace FTPClient
         public string host = null;
         public string user = null;
         public string pass = null;
+        public string localFilePath = @"C:";
 
         public Form1()
         {
@@ -32,9 +33,9 @@ namespace FTPClient
             {
                 TreeNode node = new TreeNode(drive);
                 node.Tag = drive;
-                node.ImageIndex = 0;
+                node.ImageIndex = -1;
                 localTreeView.Nodes.Add(node);
-                PopulateTree(drive, node);
+                //PopulateTree(drive, node);
             }
         }
 
@@ -91,7 +92,92 @@ namespace FTPClient
                     node.ImageIndex = 0;
                     remoteTreeView.Nodes.Add(node);
                 }
-                ftpClient = null;
+
+                //ftpClient.download("webspace/httpdocs/test.txt",@"D:\002_College\RYAN.txt");
+                //ftpClient = null;
+            }
+        }
+
+        private void remoteTreeView_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            TreeNode node = remoteTreeView.SelectedNode;
+            string ext = System.IO.Path.GetExtension(node.Text);
+
+            if (ext == "")
+                populateRemoteNode(node);
+            else
+                downloadFile(node.FullPath,node.Text);
+        }
+
+        private void downloadFile(string remoteFilePath,string localFileName)
+        {
+            Ftp ftpClient = new Ftp(host, user, pass);
+
+            localFilePath += @"\" + localFileName;
+
+            localFilePath.Replace("\\\\", "\\");
+            remoteFilePath.Replace("\\\\", "\\");
+
+            ftpClient.download(remoteFilePath,localFilePath);
+
+            MessageBox.Show("Transfer of " + localFileName + " Complete!");
+            //ftpClient = null;
+        }
+
+        private void localTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            TreeNode node = localTreeView.SelectedNode;
+            localFilePath = node.FullPath;
+
+            FileAttributes attr = File.GetAttributes(node.FullPath);
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                populateNode(node);
+            else
+                MessageBox.Show("Its a file");
+        }
+
+        private void populateRemoteNode(TreeNode node)
+        {
+            Ftp ftpClient = new Ftp(host, user, pass);
+
+            string[] remoteContents = ftpClient.directoryList("/" + node.FullPath + "/");
+            node.Nodes.Clear();
+            foreach (string remote in remoteContents)
+            {
+                node.Nodes.Add(remote);
+            }
+
+            node.Expand();
+
+            ftpClient = null;
+        }
+
+        private void populateNode(TreeNode node)
+        {
+            try
+            {
+                string dir = node.FullPath;
+                Console.WriteLine("Node: {0}", dir);
+                DirectoryInfo directory = new DirectoryInfo(dir);
+
+                foreach (DirectoryInfo d in directory.GetDirectories())
+                {
+                    node.Nodes.Add(d.Name);
+                }
+
+                foreach (FileInfo f in directory.GetFiles())
+                {
+                    TreeNode file = new TreeNode(f.Name);
+                    file.Tag = f.Name;
+                    file.ImageIndex = 2;
+                    node.Nodes.Add(file);
+                }
+
+                node.Expand();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
