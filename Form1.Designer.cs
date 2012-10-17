@@ -193,7 +193,7 @@
             this.localTreeView.ImageList = this.iconList;
             this.localTreeView.Location = new System.Drawing.Point(2, 25);
             this.localTreeView.Name = "localTreeView";
-            this.localTreeView.SelectedImageKey = "Generic.ico";
+            this.localTreeView.SelectedImageIndex = 1;
             this.localTreeView.Size = new System.Drawing.Size(235, 377);
             this.localTreeView.TabIndex = 0;
             this.localTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.localTreeView_NodeMouseDoubleClick);

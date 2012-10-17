@@ -85,16 +85,23 @@ namespace FTPClient
                 remoteTreeView.Nodes.Clear();
                 string[] remoteContents = ftpClient.directoryList("/");
 
+
                 foreach (string remote in remoteContents)
                 {
-                    TreeNode node = new TreeNode(remote);
-                    node.Tag = remote;
-                    node.ImageIndex = 0;
-                    remoteTreeView.Nodes.Add(node);
+                    if (remote == "")
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        TreeNode node = new TreeNode(remote);
+                        node.Tag = remote;
+                        node.ImageIndex = 0;
+                        remoteTreeView.Nodes.Add(node);
+                    }
                 }
 
-                //ftpClient.download("webspace/httpdocs/test.txt",@"D:\002_College\RYAN.txt");
-                //ftpClient = null;
+                ftpClient = null;
             }
         }
 
@@ -121,7 +128,7 @@ namespace FTPClient
             ftpClient.download(remoteFilePath,localFilePath);
 
             MessageBox.Show("Transfer of " + localFileName + " Complete!");
-            //ftpClient = null;
+            ftpClient = null;
         }
 
         private void localTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -129,6 +136,7 @@ namespace FTPClient
             TreeNode node = localTreeView.SelectedNode;
             localFilePath = node.FullPath;
 
+            node.Nodes.Clear();
             FileAttributes attr = File.GetAttributes(node.FullPath);
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 populateNode(node);
@@ -144,7 +152,10 @@ namespace FTPClient
             node.Nodes.Clear();
             foreach (string remote in remoteContents)
             {
-                node.Nodes.Add(remote);
+                if (remote == "")
+                    break;
+                else
+                    node.Nodes.Add(remote);
             }
 
             node.Expand();
@@ -170,6 +181,7 @@ namespace FTPClient
                     TreeNode file = new TreeNode(f.Name);
                     file.Tag = f.Name;
                     file.ImageIndex = 2;
+                    file.SelectedImageIndex = 2;
                     node.Nodes.Add(file);
                 }
 

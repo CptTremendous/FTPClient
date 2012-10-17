@@ -116,7 +116,11 @@ namespace FTPClient
                 ftpResponse.Close();
                 ftpRequest = null;
                 /* Return the Directory Listing as a string Array by Parsing 'directoryRaw' with the Delimiter you Append (I use | in This Example) */
-                try { string[] directoryList = directoryRaw.Split("|".ToCharArray()); return directoryList; }
+                try 
+                { 
+                    string[] directoryList = directoryRaw.Split("|".ToCharArray()); 
+                    return directoryList; 
+                }
                 catch (Exception ex) { }
             }
             catch (Exception ex) { }
