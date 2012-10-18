@@ -128,6 +128,7 @@ namespace FTPClient
             ftpClient.download(remoteFilePath,localFilePath);
 
             MessageBox.Show("Transfer of " + localFileName + " Complete!");
+            localFilePath = localTreeView.SelectedNode.FullPath;
             ftpClient = null;
         }
 
@@ -191,6 +192,11 @@ namespace FTPClient
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private void localTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            localFilePath = localTreeView.SelectedNode.FullPath;
         }
 
 

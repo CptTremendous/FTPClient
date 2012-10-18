@@ -196,6 +196,7 @@
             this.localTreeView.SelectedImageIndex = 1;
             this.localTreeView.Size = new System.Drawing.Size(235, 377);
             this.localTreeView.TabIndex = 0;
+            this.localTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.localTreeView_AfterSelect);
             this.localTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.localTreeView_NodeMouseDoubleClick);
             // 
             // iconList
