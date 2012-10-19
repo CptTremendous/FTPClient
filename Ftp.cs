@@ -74,7 +74,47 @@ namespace FTPClient
         }
 
         /* Upload */
+        public void upload(string remoteFile, string localFile)
+        {
+            try
+            {
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/" + remoteFile);
 
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+
+                ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
+                ftpStream = ftpRequest.GetRequestStream();
+
+                FileStream localFileStream = new FileStream(localFile, FileMode.Create);
+                byte[] byteBuffer = new byte[bufferSize];
+
+                int bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
+
+                // Upload file
+                try
+                {
+                    while (bytesSent != 0)
+                    {
+                        ftpStream.Write(byteBuffer, 0, bytesSent);
+                        bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
+                    }
+                }
+                catch (Exception ex)
+                { }
+
+                /* Housekeeping */
+                localFileStream.Close();
+                ftpStream.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex)
+            {
+            }
+            return;
+        }
 
 
         /* Delete */
