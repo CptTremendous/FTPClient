@@ -101,7 +101,7 @@ namespace FTPClient
                         remoteTreeView.Nodes.Add(node);
                     }
                 }
-                ftpClient.upload("webspace/httpdocs/screen.png", @"C:\SimpleFTP\screen.png");
+                //ftpClient.upload("webspace/httpdocs/screen.png", @"C:\SimpleFTP\screen.png");
                 ftpClient = null;
             }
         }
@@ -204,12 +204,13 @@ namespace FTPClient
         
         private void uploadFile(string localFile, string fileName)
         {
-            /*Testing*/
+
             Ftp ftpClient = new Ftp(host, user, pass);
 
-            ftpClient.upload("/webspace/httpdocs/screen.png", @"C:\SimpleFTP\screen.png");
-
-            MessageBox.Show("Successful upload of test file");
+            remoteFilePath += "/" + fileName;
+            ftpClient.upload(remoteFilePath, localFile);
+            ftpClient = null;
+            MessageBox.Show("Successful upload of " + fileName);
         }
 
         private void remoteTreeView_AfterSelect(object sender, TreeViewEventArgs e)
