@@ -16,6 +16,7 @@ namespace FTPClient
         public string user = null;
         public string pass = null;
         public string localFilePath = @"C:";
+        public string remoteFilePath = "/";
 
         public Form1()
         {
@@ -100,7 +101,7 @@ namespace FTPClient
                         remoteTreeView.Nodes.Add(node);
                     }
                 }
-
+                ftpClient.upload("webspace/httpdocs/screen.png", @"C:\SimpleFTP\screen.png");
                 ftpClient = null;
             }
         }
@@ -116,22 +117,6 @@ namespace FTPClient
                 downloadFile(node.FullPath,node.Text);
         }
 
-        private void downloadFile(string remoteFilePath,string localFileName)
-        {
-            Ftp ftpClient = new Ftp(host, user, pass);
-
-            localFilePath += @"\" + localFileName;
-
-            localFilePath.Replace("\\\\", "\\");
-            remoteFilePath.Replace("\\\\", "\\");
-
-            ftpClient.download(remoteFilePath,localFilePath);
-
-            MessageBox.Show("Transfer of " + localFileName + " Complete!");
-            localFilePath = localTreeView.SelectedNode.FullPath;
-            ftpClient = null;
-        }
-
         private void localTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             TreeNode node = localTreeView.SelectedNode;
@@ -142,7 +127,9 @@ namespace FTPClient
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 populateNode(node);
             else
-                MessageBox.Show("Its a file");
+                //MessageBox.Show("Its a file");
+                uploadFile(node.FullPath, node.Text);
+
         }
 
         private void populateRemoteNode(TreeNode node)
@@ -199,6 +186,35 @@ namespace FTPClient
             localFilePath = localTreeView.SelectedNode.FullPath;
         }
 
+        private void downloadFile(string remoteFilePath,string localFileName)
+        {
+            Ftp ftpClient = new Ftp(host, user, pass);
 
+            localFilePath += @"\" + localFileName;
+
+            localFilePath.Replace("\\\\", "\\");
+            remoteFilePath.Replace("\\\\", "\\");
+
+            ftpClient.download(remoteFilePath,localFilePath);
+
+            MessageBox.Show("Transfer of " + localFileName + " Complete!");
+            localFilePath = localTreeView.SelectedNode.FullPath;
+            ftpClient = null;
+        }
+        
+        private void uploadFile(string localFile, string fileName)
+        {
+            /*Testing*/
+            Ftp ftpClient = new Ftp(host, user, pass);
+
+            ftpClient.upload("/webspace/httpdocs/screen.png", @"C:\SimpleFTP\screen.png");
+
+            MessageBox.Show("Successful upload of test file");
+        }
+
+        private void remoteTreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            remoteFilePath = remoteTreeView.SelectedNode.FullPath;
+        }
     }
 }

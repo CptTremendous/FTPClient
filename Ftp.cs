@@ -73,7 +73,7 @@ namespace FTPClient
             return;
         }
 
-        /* Upload */
+        /* Upload File */
         public void upload(string remoteFile, string localFile)
         {
             try
@@ -86,14 +86,14 @@ namespace FTPClient
                 ftpRequest.KeepAlive = true;
 
                 ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
+
                 ftpStream = ftpRequest.GetRequestStream();
 
-                FileStream localFileStream = new FileStream(localFile, FileMode.Create);
-                byte[] byteBuffer = new byte[bufferSize];
+                FileStream localFileStream = new FileStream(localFile, FileMode.Open);
 
+                byte[] byteBuffer = new byte[bufferSize];
                 int bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
 
-                // Upload file
                 try
                 {
                     while (bytesSent != 0)
@@ -102,17 +102,14 @@ namespace FTPClient
                         bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) 
                 { }
-
                 /* Housekeeping */
                 localFileStream.Close();
                 ftpStream.Close();
                 ftpRequest = null;
             }
-            catch (Exception ex)
-            {
-            }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
             return;
         }
 

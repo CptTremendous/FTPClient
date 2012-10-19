@@ -226,6 +226,7 @@
             this.remoteTreeView.ShowRootLines = false;
             this.remoteTreeView.Size = new System.Drawing.Size(473, 377);
             this.remoteTreeView.TabIndex = 0;
+            this.remoteTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.remoteTreeView_AfterSelect);
             this.remoteTreeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.remoteTreeView_MouseDoubleClick);
             // 
             // Form1
@@ -236,9 +237,10 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.loginPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.ShowIcon = false;
-            this.Text = "FTP Client";
+            this.Text = "Simple FTP Client";
+            this.TransparencyKey = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.loginPanel.ResumeLayout(false);
             this.loginPanel.PerformLayout();
             this.panel1.ResumeLayout(false);
