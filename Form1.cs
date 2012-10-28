@@ -232,5 +232,21 @@ namespace FTPClient
             else
                 remoteFilePath = remoteTreeView.SelectedNode.FullPath;
         }
+
+        private void remoteTreeView_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                TreeNode nodeUnderMouse = remoteTreeView.GetNodeAt(e.X, e.Y);
+                string nodePath = nodeUnderMouse.FullPath;
+
+                ContextMenu cm = new ContextMenu();
+                cm.MenuItems.Add(new MenuItem("Rename"));
+
+                cm.Show(remoteTreeView, e.Location);
+                //MessageBox.Show(nodePath);
+            }
+            
+        }
     }
 }

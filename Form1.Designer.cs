@@ -228,6 +228,7 @@
             this.remoteTreeView.TabIndex = 0;
             this.remoteTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.remoteTreeView_AfterSelect);
             this.remoteTreeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.remoteTreeView_MouseDoubleClick);
+            this.remoteTreeView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.remoteTreeView_MouseUp);
             // 
             // Form1
             // 
