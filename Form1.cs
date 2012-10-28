@@ -192,7 +192,10 @@ namespace FTPClient
 
         private void localTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            localFilePath = localTreeView.SelectedNode.FullPath;
+            if (checkIsFile(localTreeView.SelectedNode))
+                localFilePath = localTreeView.SelectedNode.Parent.FullPath;
+            else
+                localFilePath = localTreeView.SelectedNode.FullPath;
         }
 
         private void downloadFile(string remoteFilePath,string localFileName)
@@ -224,7 +227,10 @@ namespace FTPClient
 
         private void remoteTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            remoteFilePath = remoteTreeView.SelectedNode.FullPath;
+            if (checkIsFile(remoteTreeView.SelectedNode))
+                remoteFilePath = remoteTreeView.SelectedNode.Parent.FullPath;
+            else
+                remoteFilePath = remoteTreeView.SelectedNode.FullPath;
         }
     }
 }
