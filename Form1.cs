@@ -109,12 +109,21 @@ namespace FTPClient
         private void remoteTreeView_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             TreeNode node = remoteTreeView.SelectedNode;
+
+            if (checkIsFile(node))
+                downloadFile(node.FullPath, node.Text);
+            else
+                populateRemoteNode(node);
+        }
+
+        private bool checkIsFile(TreeNode node)
+        {
             string ext = System.IO.Path.GetExtension(node.Text);
 
             if (ext == "")
-                populateRemoteNode(node);
+                return false;
             else
-                downloadFile(node.FullPath,node.Text);
+                return true;
         }
 
         private void localTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
