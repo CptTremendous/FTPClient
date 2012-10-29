@@ -36,7 +36,6 @@ namespace FTPClient
                 node.Tag = drive;
                 node.ImageIndex = -1;
                 localTreeView.Nodes.Add(node);
-                //PopulateTree(drive, node);
             }
         }
 
@@ -101,7 +100,6 @@ namespace FTPClient
                         remoteTreeView.Nodes.Add(node);
                     }
                 }
-                //ftpClient.upload("webspace/httpdocs/screen.png", @"C:\SimpleFTP\screen.png");
                 ftpClient = null;
             }
         }
@@ -136,7 +134,6 @@ namespace FTPClient
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 populateNode(node);
             else
-                //MessageBox.Show("Its a file");
                 uploadFile(node.FullPath, node.Text);
 
         }
@@ -243,7 +240,9 @@ namespace FTPClient
                 ContextMenuStrip cm = new ContextMenuStrip();
 
                 ToolStripItem renameItem = cm.Items.Add("Rename");
+                ToolStripItem deleteItem = cm.Items.Add("Delete");
                 renameItem.Click += new EventHandler(renameItem_Click);
+                deleteItem.Click += new EventHandler(deleteItem_Click);
 
                 cm.Show(remoteTreeView, e.Location);
             }
@@ -268,6 +267,27 @@ namespace FTPClient
                         ftpClient = null;
                         remoteTreeView.Refresh();
                     }
+                }
+            }
+        }
+
+        void deleteItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem clickedItem = sender as ToolStripItem;
+            string remotePath = "";
+
+            if (clickedItem.Text.Equals("Delete"))
+            {
+                remotePath = remoteTreeView.SelectedNode.FullPath;
+                DialogResult deleteResult = MessageBox.Show("Delete will be Permanent. Continue?","Please Confirm Delete",
+                    MessageBoxButtons.YesNo,MessageBoxIcon.Warning);
+
+                if (deleteResult == DialogResult.Yes)
+                {
+                    Ftp ftpClient = new Ftp(host, user, pass);
+                    ftpClient.delete(remotePath);
+                    ftpClient = null;
+                    remoteTreeView.Refresh();
                 }
             }
         }
