@@ -240,13 +240,28 @@ namespace FTPClient
                 TreeNode nodeUnderMouse = remoteTreeView.GetNodeAt(e.X, e.Y);
                 string nodePath = nodeUnderMouse.FullPath;
 
-                ContextMenu cm = new ContextMenu();
-                cm.MenuItems.Add(new MenuItem("Rename"));
+                ContextMenuStrip cm = new ContextMenuStrip();
+
+                ToolStripItem renameItem = cm.Items.Add("Rename");
+                renameItem.Click += new EventHandler(renameItem_Click);
 
                 cm.Show(remoteTreeView, e.Location);
-                //MessageBox.Show(nodePath);
             }
             
+        }
+
+        void renameItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem clickedItem = sender as ToolStripItem;
+            string remotePath ="";
+
+            if (clickedItem.Text.Equals("Rename"))
+            {
+                remotePath = remoteTreeView.SelectedNode.FullPath;
+                RenameForm renameForm = new RenameForm();
+
+                renameForm.Show();
+            }
         }
     }
 }

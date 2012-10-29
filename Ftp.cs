@@ -118,6 +118,30 @@ namespace FTPClient
 
         /* Rename */
 
+        public void rename(string currentPath, string newName)
+        {
+            try
+            {
+                ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/" + currentPath);
+
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+
+                ftpRequest.Method = WebRequestMethods.Ftp.Rename;
+                ftpRequest.RenameTo = newName;
+
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+
+                ftpResponse.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex)
+            { }
+            return;
+        }
+
         /* Create Directory */
 
         /* Get Directory Contents */
