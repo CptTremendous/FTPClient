@@ -15,5 +15,14 @@ namespace FTPClient
         {
             InitializeComponent();
         }
+
+        public string newFileName
+        {
+            get { return newNameTxtBox.Text; }
+        }
+        private void renameAcceptButton_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+        }
     }
 }

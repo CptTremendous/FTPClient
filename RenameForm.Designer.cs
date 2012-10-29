@@ -52,6 +52,7 @@
             this.renameAcceptButton.TabIndex = 1;
             this.renameAcceptButton.Text = "Accept";
             this.renameAcceptButton.UseVisualStyleBackColor = true;
+            this.renameAcceptButton.Click += new System.EventHandler(this.renameAcceptButton_Click);
             // 
             // label1
             // 

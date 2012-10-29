@@ -258,9 +258,17 @@ namespace FTPClient
             if (clickedItem.Text.Equals("Rename"))
             {
                 remotePath = remoteTreeView.SelectedNode.FullPath;
-                RenameForm renameForm = new RenameForm();
-
-                renameForm.Show();
+                using (RenameForm renameForm = new RenameForm())
+                {
+                    if (renameForm.ShowDialog() == DialogResult.OK)
+                    {
+                        string newFileName = renameForm.newFileName;
+                        Ftp ftpClient = new Ftp(host, user, pass);
+                        ftpClient.rename(remotePath, newFileName);
+                        ftpClient = null;
+                        remoteTreeView.Refresh();
+                    }
+                }
             }
         }
     }
