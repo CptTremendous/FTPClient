@@ -76,7 +76,11 @@ namespace FTPClient
             }
             else
             {
-                strHost = "ftp://" + hostNameTxtBox.Text;
+                if(portTextBox.Text == "")
+                    strHost = "ftp://" + hostNameTxtBox.Text;
+                else
+                    strHost = "ftp://" + hostNameTxtBox.Text + ":" + portTextBox.Text;
+
                 strUser = userNameTxtBox.Text;
                 strPass= passwrdTxtBox.Text;
 
