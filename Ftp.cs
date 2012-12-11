@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.IO;
+using System.Windows.Forms;
 
 namespace FTPClient
 {
@@ -157,9 +158,12 @@ namespace FTPClient
 
                 ftpResponse.Close();
                 ftpRequest = null;
+                MessageBox.Show("File Rename Successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             catch (Exception ex)
-            { }
+            {
+                MessageBox.Show("File Rename Unsuccessful\n" + ex.Message, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             return;
         }
 

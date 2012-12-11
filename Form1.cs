@@ -69,6 +69,7 @@ namespace FTPClient
 
         private void connectBtn_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             if (hostNameTxtBox.Text == "" || userNameTxtBox.Text == "" || passwrdTxtBox.Text == "")
             {
                 MessageBox.Show("Please Enter Connection Details");
@@ -106,6 +107,7 @@ namespace FTPClient
                 }
                 ftpClient = null;
             }
+            Cursor.Current = Cursors.Default;
         }
 
         private void remoteTreeView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -269,7 +271,8 @@ namespace FTPClient
                         Ftp ftpClient = new Ftp(strHost, strUser, strPass);
                         ftpClient.rename(strRemotePath, strNewFileName);
                         ftpClient = null;
-                        remoteTreeView.Refresh();
+                        populateRemoteNode(remoteTreeView.SelectedNode.Parent);
+                        remoteTreeView.SelectedNode.Parent.Expand();
                     }
                 }
             }
