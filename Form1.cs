@@ -267,12 +267,24 @@ namespace FTPClient
                 {
                     if (renameForm.ShowDialog() == DialogResult.OK)
                     {
-                        string strNewFileName = renameForm.newFileName;
-                        Ftp ftpClient = new Ftp(strHost, strUser, strPass);
-                        ftpClient.rename(strRemotePath, strNewFileName);
-                        ftpClient = null;
-                        populateRemoteNode(remoteTreeView.SelectedNode.Parent);
-                        remoteTreeView.SelectedNode.Parent.Expand();
+
+                        try
+                        {
+                            Cursor.Current = Cursors.WaitCursor;
+                            string strNewFileName = renameForm.newFileName;
+                            Ftp ftpClient = new Ftp(strHost, strUser, strPass);
+                            ftpClient.rename(strRemotePath, strNewFileName);
+                            ftpClient = null;
+                            populateRemoteNode(remoteTreeView.SelectedNode.Parent);
+                            remoteTreeView.SelectedNode.Parent.Expand();
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show("File Rename Successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
+                        catch (Exception ex)
+                        {
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show("File Rename Unsuccessful\n" + ex.Message, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
