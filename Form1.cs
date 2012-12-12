@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using FTPClient.Dialogs;
 
 namespace FTPClient
 {
@@ -247,12 +248,56 @@ namespace FTPClient
 
                 ToolStripItem renameItem = cm.Items.Add("Rename");
                 ToolStripItem deleteItem = cm.Items.Add("Delete");
+
+                if (!checkIsFile(nodeUnderMouse))
+                {
+                    ToolStripItem createDirectoryItem = cm.Items.Add("Create Directory");
+                    createDirectoryItem.Click += new EventHandler(createDirectoryItem_Click);
+                }
+
                 renameItem.Click += new EventHandler(renameItem_Click);
                 deleteItem.Click += new EventHandler(deleteItem_Click);
 
                 cm.Show(remoteTreeView, e.Location);
             }
             
+        }
+
+        void createDirectoryItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem clickedItem = sender as ToolStripItem;
+            string newDirectory = remoteTreeView.SelectedNode.FullPath;
+
+            if (clickedItem.Text.Equals("Create Directory"))
+            { 
+                using(CreateRemoteDirectoryForm newDirectoryForm = new CreateRemoteDirectoryForm())
+                {
+                    if(newDirectoryForm.ShowDialog() == DialogResult.OK)
+                    {
+                        try
+                        {
+                            Cursor.Current = Cursors.WaitCursor;
+                            string strNewDirectoryName = newDirectoryForm.newDirectoryName;
+                            newDirectory += "/" + strNewDirectoryName;
+
+                            Ftp ftpClient = new Ftp(strHost, strUser, strPass);
+
+                            ftpClient.createRemoteDirectory(newDirectory);
+
+                            ftpClient = null;
+                            populateRemoteNode(remoteTreeView.SelectedNode);
+                            remoteTreeView.SelectedNode.Expand();
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show("Directory Creation Successful", "Success", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        }
+                        catch(Exception ex)
+                        {
+                            Cursor.Current = Cursors.Default;
+                            MessageBox.Show("Directory Creation Unsuccessful\n" + ex.Message, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+            }
         }
 
         void renameItem_Click(object sender, EventArgs e)

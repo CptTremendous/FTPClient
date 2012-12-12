@@ -55,6 +55,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\CreateRemoteDirectoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\CreateRemoteDirectoryForm.Designer.cs">
+      <DependentUpon>CreateRemoteDirectoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,12 +70,15 @@
     <Compile Include="Ftp.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenameForm.cs">
+    <Compile Include="Dialogs\RenameForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RenameForm.Designer.cs">
+    <Compile Include="Dialogs\RenameForm.Designer.cs">
       <DependentUpon>RenameForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Dialogs\CreateRemoteDirectoryForm.resx">
+      <DependentUpon>CreateRemoteDirectoryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -82,7 +91,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="RenameForm.resx">
+    <EmbeddedResource Include="Dialogs\RenameForm.resx">
       <DependentUpon>RenameForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\app.manifest" />
