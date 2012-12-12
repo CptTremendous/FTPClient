@@ -343,13 +343,19 @@ namespace FTPClient
             if (clickedItem.Text.Equals("Delete"))
             {
                 strRemotePath = remoteTreeView.SelectedNode.FullPath;
+
                 DialogResult deleteResult = MessageBox.Show("Delete will be Permanent. Continue?","Please Confirm Delete",
                     MessageBoxButtons.YesNo,MessageBoxIcon.Warning);
 
                 if (deleteResult == DialogResult.Yes)
                 {
                     Ftp ftpClient = new Ftp(strHost, strUser, strPass);
-                    ftpClient.delete(strRemotePath);
+
+                    if (checkIsFile(remoteTreeView.SelectedNode))
+                        ftpClient.delete(strRemotePath);
+                    else
+                        ftpClient.deleteDirectory(strRemotePath);
+
                     ftpClient = null;
                     remoteTreeView.Refresh();
                 }

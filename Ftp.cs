@@ -116,7 +116,7 @@ namespace FTPClient
         }
 
 
-        // Delete
+        // Delete File
         public void delete(string filePath)
         {
             try
@@ -139,6 +139,28 @@ namespace FTPClient
             return;
         }
 
+        // Delete Directory
+        public void deleteDirectory(string filePath)
+        {
+            try
+            {
+                ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/" + filePath);
+
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+
+                ftpRequest.Method = WebRequestMethods.Ftp.RemoveDirectory;
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+
+                ftpResponse.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex)
+            { }
+            return;
+        }
         // Rename
         public void rename(string currentPath, string newName)
         {
