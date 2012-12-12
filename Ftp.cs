@@ -167,6 +167,28 @@ namespace FTPClient
         }
 
         // Create Directory
+        public void createRemoteDirectory(string newDirectory)
+        {
+            try
+            {
+                ftpRequest = (FtpWebRequest)WebRequest.Create(host + "/" + newDirectory);
+                ftpRequest.Credentials = new NetworkCredential(user,pass);
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+
+                ftpRequest.Method = WebRequestMethods.Ftp.MakeDirectory;
+
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+
+                ftpResponse.Close();
+                ftpRequest = null;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         // Get Directory Contents
         public string[] directoryList(string directory)
