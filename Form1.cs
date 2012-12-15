@@ -254,6 +254,11 @@ namespace FTPClient
                     ToolStripItem createDirectoryItem = cm.Items.Add("Create Directory");
                     createDirectoryItem.Click += new EventHandler(createDirectoryItem_Click);
                 }
+                else
+                {
+                    ToolStripItem fileInfoItem = cm.Items.Add("Get File Info");
+                    fileInfoItem.Click += new EventHandler(fileInfoItem_Click);
+                }
 
                 renameItem.Click += new EventHandler(renameItem_Click);
                 deleteItem.Click += new EventHandler(deleteItem_Click);
@@ -359,6 +364,30 @@ namespace FTPClient
                     ftpClient = null;
                     remoteTreeView.Refresh();
                 }
+            }
+        }
+
+        void fileInfoItem_Click(object sender, EventArgs e)
+        {
+            ToolStripItem clickedItem = sender as ToolStripItem;
+            string currentFile = remoteTreeView.SelectedNode.FullPath;
+            string[] fileInfo;
+            try
+            {
+                Cursor.Current = Cursors.WaitCursor;
+
+                Ftp ftpClient = new Ftp(strHost, strUser, strPass);
+
+                fileInfo = ftpClient.getFileSize(currentFile);
+
+                ftpClient = null;
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show("File Size: " + fileInfo[0] + "\nDate Last Modified: " + fileInfo[1], "File Information");
+            }
+            catch (Exception ex)
+            {
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show("Failure to retrieve File Information\n" + ex.Message, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

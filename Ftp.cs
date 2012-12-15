@@ -260,6 +260,7 @@ namespace FTPClient
         public string[] getFileSize(string fileName)
         {
             string[] fileInfo = new string[2];
+            string[] fileSizes = { "B", "KB", "MB", "GB" };
             try
             {
                 ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/" + fileName);
@@ -272,53 +273,34 @@ namespace FTPClient
 
                 ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
 
-                ftpStream = ftpResponse.GetResponseStream();
-
-                StreamReader ftpReader = new StreamReader(ftpStream);
                 string fileSize = null;
+                long fileLength = ftpResponse.ContentLength;
 
-                try
+                int order = 0;
+                while (fileLength >= 1024 && order + 1 < fileSizes.Length)
                 {
-                    while (ftpReader.Peek() != -1)
-                    {
-                        fileSize = ftpReader.ReadToEnd();
-                    }
+                    order++;
+                    fileLength = fileLength / 1024;
                 }
-                catch(Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                ftpReader.Close();
-                ftpStream.Close();
+                fileSize = String.Format("{0:0.##} {1}", fileLength, fileSizes[order]);
+
                 ftpResponse.Close();
+                ftpRequest = null;
 
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/" + fileName);
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
                 ftpRequest.Method = WebRequestMethods.Ftp.GetDateTimestamp;
                 ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+                string fileDate = ftpResponse.LastModified.ToShortDateString();
 
-                ftpStream = ftpResponse.GetResponseStream();
-
-                ftpReader = new StreamReader(ftpStream);
-                string fileDateTime = null;
-
-                try
-                {
-                    while (ftpReader.Peek() != -1)
-                    {
-                        fileDateTime = ftpReader.ReadToEnd();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-
-                ftpReader.Close();
-                ftpStream.Close();
                 ftpResponse.Close();
                 ftpRequest = null;
 
                 fileInfo[0] = fileSize;
-                fileInfo[1] = fileDateTime;
+                fileInfo[1] = fileDate;
 
                 return fileInfo;
             }
