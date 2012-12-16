@@ -22,7 +22,8 @@ namespace FTPClient
         public Form1()
         {
             InitializeComponent();
-
+            localPathLabel.Text = strLocalFilePath;
+            remotePathLabel.Text = "Not Connected";
             DisplayLocalFileTree();
         }
 
@@ -115,6 +116,7 @@ namespace FTPClient
                         }
                         
                     }
+                    remotePathLabel.Text = "/";
                 }
                 catch (Exception ex)
                 {
@@ -237,6 +239,8 @@ namespace FTPClient
                 strLocalFilePath = localTreeView.SelectedNode.Parent.FullPath;
             else
                 strLocalFilePath = localTreeView.SelectedNode.FullPath;
+
+            localPathLabel.Text = strLocalFilePath.Replace("\\",@"\");
         }
 
         private void downloadFile(string strRemoteFilePath,string strLocalFileName)
@@ -286,6 +290,8 @@ namespace FTPClient
                 strRemoteFilePath = remoteTreeView.SelectedNode.Parent.FullPath;
             else
                 strRemoteFilePath = remoteTreeView.SelectedNode.FullPath;
+
+            remotePathLabel.Text = strRemoteFilePath;
         }
 
         private void remoteTreeView_MouseUp(object sender, MouseEventArgs e)

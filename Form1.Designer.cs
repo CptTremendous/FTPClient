@@ -47,6 +47,10 @@
             this.iconList = new System.Windows.Forms.ImageList(this.components);
             this.label6 = new System.Windows.Forms.Label();
             this.remoteTreeView = new System.Windows.Forms.TreeView();
+            this.label7 = new System.Windows.Forms.Label();
+            this.localPathLabel = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.remotePathLabel = new System.Windows.Forms.Label();
             this.loginPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -167,6 +171,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.AutoScroll = true;
             this.splitContainer1.Panel1.Controls.Add(this.label5);
             this.splitContainer1.Panel1.Controls.Add(this.localTreeView);
             // 
@@ -175,7 +180,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.label6);
             this.splitContainer1.Panel2.Controls.Add(this.remoteTreeView);
             this.splitContainer1.Size = new System.Drawing.Size(727, 407);
-            this.splitContainer1.SplitterDistance = 242;
+            this.splitContainer1.SplitterDistance = 317;
             this.splitContainer1.TabIndex = 0;
             // 
             // label5
@@ -194,7 +199,7 @@
             this.localTreeView.Location = new System.Drawing.Point(2, 25);
             this.localTreeView.Name = "localTreeView";
             this.localTreeView.SelectedImageIndex = 1;
-            this.localTreeView.Size = new System.Drawing.Size(235, 377);
+            this.localTreeView.Size = new System.Drawing.Size(309, 377);
             this.localTreeView.TabIndex = 0;
             this.localTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.localTreeView_AfterSelect);
             this.localTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.localTreeView_NodeMouseDoubleClick);
@@ -220,22 +225,64 @@
             // 
             this.remoteTreeView.ImageIndex = 0;
             this.remoteTreeView.ImageList = this.iconList;
-            this.remoteTreeView.Location = new System.Drawing.Point(4, 25);
+            this.remoteTreeView.Location = new System.Drawing.Point(3, 25);
             this.remoteTreeView.Name = "remoteTreeView";
             this.remoteTreeView.SelectedImageIndex = 0;
             this.remoteTreeView.ShowRootLines = false;
-            this.remoteTreeView.Size = new System.Drawing.Size(473, 377);
+            this.remoteTreeView.Size = new System.Drawing.Size(398, 377);
             this.remoteTreeView.TabIndex = 0;
             this.remoteTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.remoteTreeView_AfterSelect);
             this.remoteTreeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.remoteTreeView_MouseDoubleClick);
             this.remoteTreeView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.remoteTreeView_MouseUp);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(6, 472);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(32, 13);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "Path:";
+            // 
+            // localPathLabel
+            // 
+            this.localPathLabel.AutoSize = true;
+            this.localPathLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.localPathLabel.Location = new System.Drawing.Point(36, 472);
+            this.localPathLabel.Name = "localPathLabel";
+            this.localPathLabel.Size = new System.Drawing.Size(29, 12);
+            this.localPathLabel.TabIndex = 3;
+            this.localPathLabel.Text = "label8";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(325, 472);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(32, 13);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "Path:";
+            // 
+            // remotePathLabel
+            // 
+            this.remotePathLabel.AutoSize = true;
+            this.remotePathLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.remotePathLabel.Location = new System.Drawing.Point(355, 472);
+            this.remotePathLabel.Name = "remotePathLabel";
+            this.remotePathLabel.Size = new System.Drawing.Size(29, 12);
+            this.remotePathLabel.TabIndex = 5;
+            this.remotePathLabel.Text = "label9";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(731, 461);
+            this.ClientSize = new System.Drawing.Size(731, 497);
+            this.Controls.Add(this.remotePathLabel);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.localPathLabel);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.loginPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -252,6 +299,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -274,6 +322,10 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ImageList iconList;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label localPathLabel;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label remotePathLabel;
     }
 }
 
