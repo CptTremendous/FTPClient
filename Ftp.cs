@@ -63,7 +63,10 @@ namespace FTPClient
                         bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
                     }
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) 
+                {
+                    throw new Exception(ex.Message);
+                }
 
                 // Housekeeping
                 localFileStream.Close();
@@ -71,7 +74,10 @@ namespace FTPClient
                 ftpResponse.Close();
                 ftpRequest = null;
             }
-            catch (Exception ex) { }
+            catch (Exception ex) 
+            {
+                throw new Exception(ex.Message);
+            }
             return;
         }
 
@@ -105,13 +111,18 @@ namespace FTPClient
                     }
                 }
                 catch (Exception ex) 
-                { }
+                {
+                    throw new Exception(ex.Message);
+                }
                 // Housekeeping
                 localFileStream.Close();
                 ftpStream.Close();
                 ftpRequest = null;
             }
-            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+            catch (Exception ex) 
+            {
+                throw new Exception(ex.Message);
+            }
             return;
         }
 
@@ -134,7 +145,9 @@ namespace FTPClient
                 ftpRequest = null;
             }
             catch (Exception ex)
-            { }
+            { 
+                throw new Exception(ex.Message); 
+            }
             return;
         }
 
@@ -157,7 +170,9 @@ namespace FTPClient
                 ftpRequest = null;
             }
             catch (Exception ex)
-            { }
+            {
+                throw new Exception(ex.Message);
+            }
             return;
         }
 
@@ -235,8 +250,17 @@ namespace FTPClient
 
                 string directoryRaw = null;
 
-                try { while (ftpReader.Peek() != -1) { directoryRaw += ftpReader.ReadLine() + "|"; } }
-                catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+                try
+                {
+                    while (ftpReader.Peek() != -1)
+                    {
+                        directoryRaw += ftpReader.ReadLine() + "|";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
                 
                 // Housekeeping
                 ftpReader.Close();
@@ -249,11 +273,16 @@ namespace FTPClient
                     string[] directoryList = directoryRaw.Split("|".ToCharArray()); 
                     return directoryList; 
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) 
+                {
+                    throw new Exception(ex.Message);
+                }
             }
-            catch (Exception ex) { }
-            // Return an Empty string Array if an Exception Occurs
-            return new string[] { "" };
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+ 
         }
 
         // Get File Information
