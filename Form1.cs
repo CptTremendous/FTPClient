@@ -89,22 +89,36 @@ namespace FTPClient
                 Ftp ftpClient = new Ftp(strHost, strUser, strPass);
 
                 remoteTreeView.Nodes.Clear();
-                string[] remoteContents = ftpClient.directoryList("/");
-
-
-                foreach (string strRemote in remoteContents)
+                try
                 {
-                    if (strRemote == "")
+                    string[] remoteContents = ftpClient.directoryList("/");
+                    foreach (string strRemote in remoteContents)
                     {
-                        break;
+                        if (strRemote == "")
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            TreeNode node = new TreeNode(strRemote);
+                            node.Tag = strRemote;
+                            if (!checkIsFile(node.Text))
+                            {
+                                node.ImageIndex = -1;
+                                node.SelectedImageIndex = 1;
+                            }
+                            else
+                            {
+                                node.ImageIndex = 2;
+                            }
+                            remoteTreeView.Nodes.Add(node);
+                        }
+                        
                     }
-                    else
-                    {
-                        TreeNode node = new TreeNode(strRemote);
-                        node.Tag = strRemote;
-                        node.ImageIndex = 0;
-                        remoteTreeView.Nodes.Add(node);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error Retrieving Remote Files.\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 ftpClient = null;
             }
@@ -115,15 +129,15 @@ namespace FTPClient
         {
             TreeNode node = remoteTreeView.SelectedNode;
 
-            if (checkIsFile(node))
+            if (checkIsFile(node.Text))
                 downloadFile(node.FullPath, node.Text);
             else
                 populateRemoteNode(node);
         }
 
-        private bool checkIsFile(TreeNode node)
+        private bool checkIsFile(string nodeText)
         {
-            string ext = System.IO.Path.GetExtension(node.Text);
+            string ext = System.IO.Path.GetExtension(nodeText);
 
             if (ext == "")
                 return false;
@@ -147,21 +161,44 @@ namespace FTPClient
 
         private void populateRemoteNode(TreeNode node)
         {
-            Ftp ftpClient = new Ftp(strHost, strUser, strPass);
-
-            string[] remoteContents = ftpClient.directoryList("/" + node.FullPath + "/");
-            node.Nodes.Clear();
-            foreach (string strRemote in remoteContents)
+            try
             {
-                if (strRemote == "")
-                    break;
-                else
-                    node.Nodes.Add(strRemote);
+                Ftp ftpClient = new Ftp(strHost, strUser, strPass);
+
+                string[] remoteContents = ftpClient.directoryList("/" + node.FullPath + "/");
+                node.Nodes.Clear();
+                foreach (string strRemote in remoteContents)
+                {
+                    if (strRemote == "")
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        node.Nodes.Add(strRemote);
+                    }
+                }
+                foreach (TreeNode childNode in node.Nodes)
+                {
+                    if (!checkIsFile(childNode.Text))
+                    {
+                        childNode.ImageIndex = -1;
+                        childNode.SelectedImageIndex = 1;
+                    }
+                    else
+                    {
+                        childNode.ImageIndex = 2;
+                        childNode.SelectedImageIndex = 2;
+                    }
+                }
+                node.Expand();
+
+                ftpClient = null;
             }
-
-            node.Expand();
-
-            ftpClient = null;
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error Retrieving Remote Contents\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void populateNode(TreeNode node)
@@ -196,7 +233,7 @@ namespace FTPClient
 
         private void localTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (checkIsFile(localTreeView.SelectedNode))
+            if (checkIsFile(localTreeView.SelectedNode.Text))
                 strLocalFilePath = localTreeView.SelectedNode.Parent.FullPath;
             else
                 strLocalFilePath = localTreeView.SelectedNode.FullPath;
@@ -204,18 +241,25 @@ namespace FTPClient
 
         private void downloadFile(string strRemoteFilePath,string strLocalFileName)
         {
-            Ftp ftpClient = new Ftp(strHost, strUser, strPass);
+            try
+            {
+                Ftp ftpClient = new Ftp(strHost, strUser, strPass);
 
-            strLocalFilePath += @"\" + strLocalFileName;
+                strLocalFilePath += @"\" + strLocalFileName;
 
-            strLocalFilePath.Replace("\\\\", "\\");
-            strRemoteFilePath.Replace("\\\\", "\\");
+                strLocalFilePath.Replace("\\\\", "\\");
+                strRemoteFilePath.Replace("\\\\", "\\");
 
-            ftpClient.download(strRemoteFilePath,strLocalFilePath);
+                ftpClient.download(strRemoteFilePath, strLocalFilePath);
 
-            MessageBox.Show("Transfer of " + strLocalFileName + " Complete!");
-            strLocalFilePath = localTreeView.SelectedNode.FullPath;
-            ftpClient = null;
+                MessageBox.Show("Download of " + strLocalFileName + " Complete!");
+                strLocalFilePath = localTreeView.SelectedNode.FullPath;
+                ftpClient = null;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("File Download Unsuccessful\n" + ex.Message, "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         
         private void uploadFile(string strLocalFile, string strFileName)
@@ -224,14 +268,21 @@ namespace FTPClient
             Ftp ftpClient = new Ftp(strHost, strUser, strPass);
 
             strRemoteFilePath += "/" + strFileName;
-            ftpClient.upload(strRemoteFilePath, strLocalFile);
-            ftpClient = null;
-            MessageBox.Show("Successful upload of " + strFileName);
+            try
+            {
+                ftpClient.upload(strRemoteFilePath, strLocalFile);
+                ftpClient = null;
+                MessageBox.Show("Successful upload of " + strFileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("File Upload Unsuccessful\n" + ex.Message,"Upload Failed", MessageBoxButtons.OK,MessageBoxIcon.Error);
+            }
         }
 
         private void remoteTreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (checkIsFile(remoteTreeView.SelectedNode))
+            if (checkIsFile(remoteTreeView.SelectedNode.Text))
                 strRemoteFilePath = remoteTreeView.SelectedNode.Parent.FullPath;
             else
                 strRemoteFilePath = remoteTreeView.SelectedNode.FullPath;
@@ -249,7 +300,7 @@ namespace FTPClient
                 ToolStripItem renameItem = cm.Items.Add("Rename");
                 ToolStripItem deleteItem = cm.Items.Add("Delete");
 
-                if (!checkIsFile(nodeUnderMouse))
+                if (!checkIsFile(nodeUnderMouse.Text))
                 {
                     ToolStripItem createDirectoryItem = cm.Items.Add("Create Directory");
                     createDirectoryItem.Click += new EventHandler(createDirectoryItem_Click);
@@ -356,7 +407,7 @@ namespace FTPClient
                 {
                     Ftp ftpClient = new Ftp(strHost, strUser, strPass);
 
-                    if (checkIsFile(remoteTreeView.SelectedNode))
+                    if (checkIsFile(remoteTreeView.SelectedNode.Text))
                         ftpClient.delete(strRemotePath);
                     else
                         ftpClient.deleteDirectory(strRemotePath);
