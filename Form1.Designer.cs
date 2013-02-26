@@ -51,6 +51,7 @@
             this.localPathLabel = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.remotePathLabel = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.loginPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -156,9 +157,9 @@
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.splitContainer1);
-            this.panel1.Location = new System.Drawing.Point(0, 50);
+            this.panel1.Location = new System.Drawing.Point(0, 65);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(731, 411);
+            this.panel1.Size = new System.Drawing.Size(731, 396);
             this.panel1.TabIndex = 1;
             // 
             // splitContainer1
@@ -177,9 +178,10 @@
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.AutoScroll = true;
             this.splitContainer1.Panel2.Controls.Add(this.label6);
             this.splitContainer1.Panel2.Controls.Add(this.remoteTreeView);
-            this.splitContainer1.Size = new System.Drawing.Size(727, 407);
+            this.splitContainer1.Size = new System.Drawing.Size(727, 392);
             this.splitContainer1.SplitterDistance = 317;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -199,7 +201,7 @@
             this.localTreeView.Location = new System.Drawing.Point(2, 25);
             this.localTreeView.Name = "localTreeView";
             this.localTreeView.SelectedImageIndex = 1;
-            this.localTreeView.Size = new System.Drawing.Size(309, 377);
+            this.localTreeView.Size = new System.Drawing.Size(310, 363);
             this.localTreeView.TabIndex = 0;
             this.localTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.localTreeView_AfterSelect);
             this.localTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.localTreeView_NodeMouseDoubleClick);
@@ -229,7 +231,7 @@
             this.remoteTreeView.Name = "remoteTreeView";
             this.remoteTreeView.SelectedImageIndex = 0;
             this.remoteTreeView.ShowRootLines = false;
-            this.remoteTreeView.Size = new System.Drawing.Size(398, 377);
+            this.remoteTreeView.Size = new System.Drawing.Size(395, 363);
             this.remoteTreeView.TabIndex = 0;
             this.remoteTreeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.remoteTreeView_AfterSelect);
             this.remoteTreeView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.remoteTreeView_MouseDoubleClick);
@@ -273,11 +275,21 @@
             this.remotePathLabel.TabIndex = 5;
             this.remotePathLabel.Text = "label9";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.ForeColor = System.Drawing.Color.Orange;
+            this.progressBar1.Location = new System.Drawing.Point(8, 49);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(717, 10);
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar1.TabIndex = 6;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(731, 497);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.remotePathLabel);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.localPathLabel);
@@ -326,6 +338,7 @@
         private System.Windows.Forms.Label localPathLabel;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label remotePathLabel;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
