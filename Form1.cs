@@ -18,13 +18,52 @@ namespace FTPClient
         public string strPass = null;
         public string strLocalFilePath = @"C:";
         public string strRemoteFilePath = "/";
+        private System.ComponentModel.BackgroundWorker uploadBackgroundWorker;
 
         public Form1()
         {
             InitializeComponent();
+            InitializeUploadBackgroundWorker();
             localPathLabel.Text = strLocalFilePath;
             remotePathLabel.Text = "Not Connected";
             DisplayLocalFileTree();
+        }
+
+        private void InitializeUploadBackgroundWorker()
+        {
+            uploadBackgroundWorker.WorkerReportsProgress = true;
+            uploadBackgroundWorker.DoWork += new DoWorkEventHandler(uploadBackgroundWorker_DoWork);
+            uploadBackgroundWorker.RunWorkerCompleted +=  new RunWorkerCompletedEventHandler(uploadBackgroundWorker_RunWorkerCompleted);
+            uploadBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(uploadBackgroundWorker_ProgressChanged);
+        }
+
+        private void uploadBackgroundWorker_ProgressChanged(object sender,
+            ProgressChangedEventArgs e)
+        {
+            this.progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void uploadBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MessageBox.Show("File Upload Complete");
+            progressBar1.Value = 0;
+        }
+
+        private void uploadBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // Assign the result of the computation 
+            // to the Result property of the DoWorkEventArgs 
+            // object. This is will be available to the  
+            // RunWorkerCompleted eventhandler.
+            string[] args = e.Argument as string[];
+            string remoteFile = args[0];
+            string localFile = args[1];
+
+            Ftp ftp = new Ftp(strHost,strUser,strPass);
+            ftp.testUpload(remoteFile,localFile, worker, e);
+            ftp = null;
         }
 
 
@@ -268,20 +307,24 @@ namespace FTPClient
         
         private void uploadFile(string strLocalFile, string strFileName)
         {
-
-            Ftp ftpClient = new Ftp(strHost, strUser, strPass);
-
+            //call run async
             strRemoteFilePath += "/" + strFileName;
-            try
-            {
-                ftpClient.upload(strRemoteFilePath, strLocalFile);
-                ftpClient = null;
-                MessageBox.Show("Successful upload of " + strFileName);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("File Upload Unsuccessful\n" + ex.Message,"Upload Failed", MessageBoxButtons.OK,MessageBoxIcon.Error);
-            }
+            string[] files = { strRemoteFilePath, strLocalFile };
+
+            uploadBackgroundWorker.RunWorkerAsync(files);
+            //Ftp ftpClient = new Ftp(strHost, strUser, strPass);
+
+            
+            //try
+            //{
+            //    ftpClient.upload(strRemoteFilePath, strLocalFile);
+            //    ftpClient = null;
+            //    MessageBox.Show("Successful upload of " + strFileName);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("File Upload Unsuccessful\n" + ex.Message,"Upload Failed", MessageBoxButtons.OK,MessageBoxIcon.Error);
+            //}
         }
 
         private void remoteTreeView_AfterSelect(object sender, TreeViewEventArgs e)

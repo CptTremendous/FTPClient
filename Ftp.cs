@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace FTPClient
 {
@@ -17,6 +18,7 @@ namespace FTPClient
         private FtpWebResponse ftpResponse = null;
         private Stream ftpStream = null;
         private int bufferSize = 2048;
+        private int highestPercentageReached = 0;
 
         // Constructor
         public Ftp(string hostAddress, string userName, string password)
@@ -337,6 +339,108 @@ namespace FTPClient
             {
                 throw new Exception(ex.Message);
             }
+        }
+        
+        public long ComputeFibonacci(int n, BackgroundWorker worker, DoWorkEventArgs e)
+        {
+            // The parameter n must be >= 0 and <= 91. 
+            // Fib(n), with n > 91, overflows a long. 
+            if ((n < 0) || (n > 91))
+            {
+                throw new ArgumentException(
+                    "value must be >= 0 and <= 91", "n");
+            }
+
+            long result = 1;
+
+            // Abort the operation if the user has canceled. 
+            // Note that a call to CancelAsync may have set  
+            // CancellationPending to true just after the 
+            // last invocation of this method exits, so this  
+            // code will not have the opportunity to set the  
+            // DoWorkEventArgs.Cancel flag to true. This means 
+            // that RunWorkerCompletedEventArgs.Cancelled will 
+            // not be set to true in your RunWorkerCompleted 
+            // event handler. This is a race condition. 
+
+            if (worker.CancellationPending)
+            {   
+                e.Cancel = true;
+            }
+            else
+            {   
+                if (n < 2)
+                {   
+                    result = 1;
+                }
+                else
+                {   
+                    result = ComputeFibonacci(n - 1, worker, e) + 
+                             ComputeFibonacci(n - 2, worker, e);
+                }
+
+                // Report progress as a percentage of the total task. 
+                int percentComplete = 
+                    (int)((float)n / (float)91 * 100);
+                if (percentComplete > highestPercentageReached)
+                {
+                    highestPercentageReached = percentComplete;
+                    worker.ReportProgress(percentComplete);
+                }
+            }
+
+            return result;
+        }
+
+        public void testUpload(string remoteFile, string localFile, BackgroundWorker worker, DoWorkEventArgs e)
+        {
+            try
+            {
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/" + remoteFile);
+
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+
+                ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
+
+                ftpStream = ftpRequest.GetRequestStream();
+
+                FileStream localFileStream = new FileStream(localFile, FileMode.Open);
+
+                byte[] byteBuffer = new byte[bufferSize];
+                int bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
+
+                try
+                {
+                    while (bytesSent != 0)
+                    {
+                        ftpStream.Write(byteBuffer, 0, bytesSent);
+                        bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
+
+                        int percentComplete = (int)((float)bytesSent / (float)bufferSize * 100);
+                        if (percentComplete > highestPercentageReached)
+                        {
+                            highestPercentageReached = percentComplete;
+                            worker.ReportProgress(percentComplete);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                // Housekeeping
+                localFileStream.Close();
+                ftpStream.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return;
         }
     }
 }

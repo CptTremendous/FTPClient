@@ -52,6 +52,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.remotePathLabel = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.uploadBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.loginPanel.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
