@@ -340,57 +340,6 @@ namespace FTPClient
                 throw new Exception(ex.Message);
             }
         }
-        
-        public long ComputeFibonacci(int n, BackgroundWorker worker, DoWorkEventArgs e)
-        {
-            // The parameter n must be >= 0 and <= 91. 
-            // Fib(n), with n > 91, overflows a long. 
-            if ((n < 0) || (n > 91))
-            {
-                throw new ArgumentException(
-                    "value must be >= 0 and <= 91", "n");
-            }
-
-            long result = 1;
-
-            // Abort the operation if the user has canceled. 
-            // Note that a call to CancelAsync may have set  
-            // CancellationPending to true just after the 
-            // last invocation of this method exits, so this  
-            // code will not have the opportunity to set the  
-            // DoWorkEventArgs.Cancel flag to true. This means 
-            // that RunWorkerCompletedEventArgs.Cancelled will 
-            // not be set to true in your RunWorkerCompleted 
-            // event handler. This is a race condition. 
-
-            if (worker.CancellationPending)
-            {   
-                e.Cancel = true;
-            }
-            else
-            {   
-                if (n < 2)
-                {   
-                    result = 1;
-                }
-                else
-                {   
-                    result = ComputeFibonacci(n - 1, worker, e) + 
-                             ComputeFibonacci(n - 2, worker, e);
-                }
-
-                // Report progress as a percentage of the total task. 
-                int percentComplete = 
-                    (int)((float)n / (float)91 * 100);
-                if (percentComplete > highestPercentageReached)
-                {
-                    highestPercentageReached = percentComplete;
-                    worker.ReportProgress(percentComplete);
-                }
-            }
-
-            return result;
-        }
 
         public void testUpload(string remoteFile, string localFile, BackgroundWorker worker, DoWorkEventArgs e)
         {
@@ -434,6 +383,67 @@ namespace FTPClient
                 // Housekeeping
                 localFileStream.Close();
                 ftpStream.Close();
+                ftpRequest = null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return;
+        }
+
+        public void testDownload(string remoteFile, string localFile, BackgroundWorker worker, DoWorkEventArgs e)
+        {
+            try
+            {
+                // Create Request
+                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/" + remoteFile);
+                // Log In
+                ftpRequest.Credentials = new NetworkCredential(user, pass);
+                ftpRequest.UseBinary = true;
+                ftpRequest.UsePassive = true;
+                ftpRequest.KeepAlive = true;
+
+                // Request Type
+                ftpRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+
+                // Get Response
+                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+
+                // Get server response stream 
+                ftpStream = ftpResponse.GetResponseStream();
+
+                FileStream localFileStream = new FileStream(localFile, FileMode.Create);
+
+                // Buffer for downloaded data
+                byte[] byteBuffer = new byte[bufferSize];
+                int bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
+
+                // Download File
+                try
+                {
+                    while (bytesRead > 0)
+                    {
+                        localFileStream.Write(byteBuffer, 0, bytesRead);
+                        bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
+
+                        int percentComplete = (int)((float)bytesRead / (float)bufferSize * 100);
+                        if (percentComplete > highestPercentageReached)
+                        {
+                            highestPercentageReached = percentComplete;
+                            worker.ReportProgress(percentComplete);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+
+                // Housekeeping
+                localFileStream.Close();
+                ftpStream.Close();
+                ftpResponse.Close();
                 ftpRequest = null;
             }
             catch (Exception ex)

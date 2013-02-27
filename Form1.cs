@@ -19,14 +19,48 @@ namespace FTPClient
         public string strLocalFilePath = @"C:";
         public string strRemoteFilePath = "/";
         private System.ComponentModel.BackgroundWorker uploadBackgroundWorker;
+        private System.ComponentModel.BackgroundWorker downloadBackgroundWorker;
 
         public Form1()
         {
             InitializeComponent();
             InitializeUploadBackgroundWorker();
+            InitializeDownloadBackgroundWorker();
             localPathLabel.Text = strLocalFilePath;
             remotePathLabel.Text = "Not Connected";
             DisplayLocalFileTree();
+        }
+
+        private void InitializeDownloadBackgroundWorker()
+        {
+            downloadBackgroundWorker.WorkerReportsProgress = true;
+            downloadBackgroundWorker.DoWork += new DoWorkEventHandler(downloadBackgroundWorker_DoWork);
+            downloadBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(downloadBackgroundWorker_RunWorkerCompleted);
+            downloadBackgroundWorker.ProgressChanged += new ProgressChangedEventHandler(downloadBackgroundWorker_ProgressChanged);
+        }
+
+        private void downloadBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void downloadBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MessageBox.Show("File Download Complete");
+            progressBar1.Value = 0;
+        }
+
+        private void downloadBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            string[] args = e.Argument as string[];
+            string remoteFile = args[0];
+            string localFile = args[1];
+
+            Ftp ftp = new Ftp(strHost, strUser, strPass);
+            ftp.testDownload(remoteFile, localFile, worker, e);
+            ftp = null;
         }
 
         private void InitializeUploadBackgroundWorker()
@@ -284,25 +318,28 @@ namespace FTPClient
 
         private void downloadFile(string strRemoteFilePath,string strLocalFileName)
         {
-            try
-            {
-                Ftp ftpClient = new Ftp(strHost, strUser, strPass);
+            //try
+            //{
+                //Ftp ftpClient = new Ftp(strHost, strUser, strPass);
 
                 strLocalFilePath += @"\" + strLocalFileName;
 
                 strLocalFilePath.Replace("\\\\", "\\");
                 strRemoteFilePath.Replace("\\\\", "\\");
+                string[] files = { strRemoteFilePath, strLocalFilePath };
 
-                ftpClient.download(strRemoteFilePath, strLocalFilePath);
+                downloadBackgroundWorker.RunWorkerAsync(files);
 
-                MessageBox.Show("Download of " + strLocalFileName + " Complete!");
-                strLocalFilePath = localTreeView.SelectedNode.FullPath;
-                ftpClient = null;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("File Download Unsuccessful\n" + ex.Message, "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                //ftpClient.download(strRemoteFilePath, strLocalFilePath);
+
+                //MessageBox.Show("Download of " + strLocalFileName + " Complete!");
+                //strLocalFilePath = localTreeView.SelectedNode.FullPath;
+                //ftpClient = null;
+           // }
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("File Download Unsuccessful\n" + ex.Message, "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
         }
         
         private void uploadFile(string strLocalFile, string strFileName)
