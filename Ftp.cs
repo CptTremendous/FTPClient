@@ -279,11 +279,19 @@ namespace FTPClient
                 {
                     throw new Exception(ex.Message);
                 }
+<<<<<<< HEAD
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+=======
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+>>>>>>> 16994318db460e2dfb0e86221d5063b3ce5f4c1d
  
         }
 
