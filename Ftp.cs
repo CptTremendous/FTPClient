@@ -29,7 +29,7 @@ namespace FTPClient
         }
 
         // Download
-        public void download(string remoteFile, string localFile)
+        public void download(string remoteFile, string localFile, BackgroundWorker worker, DoWorkEventArgs e)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace FTPClient
 
                 // Request Type
                 ftpRequest.Method = WebRequestMethods.Ftp.DownloadFile;
-                
+
                 // Get Response
                 ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
 
@@ -63,9 +63,16 @@ namespace FTPClient
                     {
                         localFileStream.Write(byteBuffer, 0, bytesRead);
                         bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
+
+                        int percentComplete = (int)((float)bytesRead / (float)bufferSize * 100);
+                        if (percentComplete > highestPercentageReached)
+                        {
+                            highestPercentageReached = percentComplete;
+                            worker.ReportProgress(percentComplete);
+                        }
                     }
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -76,7 +83,7 @@ namespace FTPClient
                 ftpResponse.Close();
                 ftpRequest = null;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -84,7 +91,7 @@ namespace FTPClient
         }
 
         // Upload File 
-        public void upload(string remoteFile, string localFile)
+        public void upload(string remoteFile, string localFile, BackgroundWorker worker, DoWorkEventArgs e)
         {
             try
             {
@@ -110,9 +117,16 @@ namespace FTPClient
                     {
                         ftpStream.Write(byteBuffer, 0, bytesSent);
                         bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
+
+                        int percentComplete = (int)((float)bytesSent / (float)bufferSize * 100);
+                        if (percentComplete > highestPercentageReached)
+                        {
+                            highestPercentageReached = percentComplete;
+                            worker.ReportProgress(percentComplete);
+                        }
                     }
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -121,7 +135,7 @@ namespace FTPClient
                 ftpStream.Close();
                 ftpRequest = null;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -279,22 +293,13 @@ namespace FTPClient
                 {
                     throw new Exception(ex.Message);
                 }
-<<<<<<< HEAD
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-=======
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
->>>>>>> 16994318db460e2dfb0e86221d5063b3ce5f4c1d
+       }
  
-        }
-
         // Get File Information
         public string[] getFileSize(string fileName)
         {
@@ -348,117 +353,6 @@ namespace FTPClient
                 throw new Exception(ex.Message);
             }
         }
-
-        public void testUpload(string remoteFile, string localFile, BackgroundWorker worker, DoWorkEventArgs e)
-        {
-            try
-            {
-                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/" + remoteFile);
-
-                ftpRequest.Credentials = new NetworkCredential(user, pass);
-                ftpRequest.UseBinary = true;
-                ftpRequest.UsePassive = true;
-                ftpRequest.KeepAlive = true;
-
-                ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
-
-                ftpStream = ftpRequest.GetRequestStream();
-
-                FileStream localFileStream = new FileStream(localFile, FileMode.Open);
-
-                byte[] byteBuffer = new byte[bufferSize];
-                int bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
-
-                try
-                {
-                    while (bytesSent != 0)
-                    {
-                        ftpStream.Write(byteBuffer, 0, bytesSent);
-                        bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
-
-                        int percentComplete = (int)((float)bytesSent / (float)bufferSize * 100);
-                        if (percentComplete > highestPercentageReached)
-                        {
-                            highestPercentageReached = percentComplete;
-                            worker.ReportProgress(percentComplete);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                // Housekeeping
-                localFileStream.Close();
-                ftpStream.Close();
-                ftpRequest = null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return;
-        }
-
-        public void testDownload(string remoteFile, string localFile, BackgroundWorker worker, DoWorkEventArgs e)
-        {
-            try
-            {
-                // Create Request
-                ftpRequest = (FtpWebRequest)FtpWebRequest.Create(host + "/" + remoteFile);
-                // Log In
-                ftpRequest.Credentials = new NetworkCredential(user, pass);
-                ftpRequest.UseBinary = true;
-                ftpRequest.UsePassive = true;
-                ftpRequest.KeepAlive = true;
-
-                // Request Type
-                ftpRequest.Method = WebRequestMethods.Ftp.DownloadFile;
-
-                // Get Response
-                ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
-
-                // Get server response stream 
-                ftpStream = ftpResponse.GetResponseStream();
-
-                FileStream localFileStream = new FileStream(localFile, FileMode.Create);
-
-                // Buffer for downloaded data
-                byte[] byteBuffer = new byte[bufferSize];
-                int bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
-
-                // Download File
-                try
-                {
-                    while (bytesRead > 0)
-                    {
-                        localFileStream.Write(byteBuffer, 0, bytesRead);
-                        bytesRead = ftpStream.Read(byteBuffer, 0, bufferSize);
-
-                        int percentComplete = (int)((float)bytesRead / (float)bufferSize * 100);
-                        if (percentComplete > highestPercentageReached)
-                        {
-                            highestPercentageReached = percentComplete;
-                            worker.ReportProgress(percentComplete);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-
-                // Housekeeping
-                localFileStream.Close();
-                ftpStream.Close();
-                ftpResponse.Close();
-                ftpRequest = null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return;
-        }
+  
     }
 }

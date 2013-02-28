@@ -59,7 +59,7 @@ namespace FTPClient
             string localFile = args[1];
 
             Ftp ftp = new Ftp(strHost, strUser, strPass);
-            ftp.testDownload(remoteFile, localFile, worker, e);
+            ftp.download(remoteFile, localFile, worker, e);
             ftp = null;
         }
 
@@ -96,7 +96,7 @@ namespace FTPClient
             string localFile = args[1];
 
             Ftp ftp = new Ftp(strHost,strUser,strPass);
-            ftp.testUpload(remoteFile,localFile, worker, e);
+            ftp.upload(remoteFile,localFile, worker, e);
             ftp = null;
         }
 
