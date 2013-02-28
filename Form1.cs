@@ -195,10 +195,6 @@ namespace FTPClient
                 {
                     MessageBox.Show("Error Retrieving Remote Files.\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error Retrieving Remote Files.\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
                 ftpClient = null;
             }
             Cursor.Current = Cursors.Default;
@@ -321,51 +317,14 @@ namespace FTPClient
         }
 
         private void downloadFile(string strRemoteFilePath,string strLocalFileName)
-        {
-<<<<<<< HEAD
-            //try
-            //{
-                //Ftp ftpClient = new Ftp(strHost, strUser, strPass);
+        { 
+            strLocalFilePath += @"\" + strLocalFileName;
 
-                strLocalFilePath += @"\" + strLocalFileName;
+            strLocalFilePath.Replace("\\\\", "\\");
+            strRemoteFilePath.Replace("\\\\", "\\");
+            string[] files = { strRemoteFilePath, strLocalFilePath };
 
-                strLocalFilePath.Replace("\\\\", "\\");
-                strRemoteFilePath.Replace("\\\\", "\\");
-                string[] files = { strRemoteFilePath, strLocalFilePath };
-
-                downloadBackgroundWorker.RunWorkerAsync(files);
-
-                //ftpClient.download(strRemoteFilePath, strLocalFilePath);
-
-                //MessageBox.Show("Download of " + strLocalFileName + " Complete!");
-                //strLocalFilePath = localTreeView.SelectedNode.FullPath;
-                //ftpClient = null;
-           // }
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("File Download Unsuccessful\n" + ex.Message, "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
-=======
-            try
-            {
-                Ftp ftpClient = new Ftp(strHost, strUser, strPass);
-
-                strLocalFilePath += @"\" + strLocalFileName;
-
-                strLocalFilePath.Replace("\\\\", "\\");
-                strRemoteFilePath.Replace("\\\\", "\\");
-
-                ftpClient.download(strRemoteFilePath, strLocalFilePath);
-
-                MessageBox.Show("Download of " + strLocalFileName + " Complete!");
-                strLocalFilePath = localTreeView.SelectedNode.FullPath;
-                ftpClient = null;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("File Download Unsuccessful\n" + ex.Message, "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
->>>>>>> 16994318db460e2dfb0e86221d5063b3ce5f4c1d
+            downloadBackgroundWorker.RunWorkerAsync(files);
         }
         
         private void uploadFile(string strLocalFile, string strFileName)
@@ -375,33 +334,6 @@ namespace FTPClient
             string[] files = { strRemoteFilePath, strLocalFile };
 
             uploadBackgroundWorker.RunWorkerAsync(files);
-            //Ftp ftpClient = new Ftp(strHost, strUser, strPass);
-
-<<<<<<< HEAD
-            
-            //try
-            //{
-            //    ftpClient.upload(strRemoteFilePath, strLocalFile);
-            //    ftpClient = null;
-            //    MessageBox.Show("Successful upload of " + strFileName);
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("File Upload Unsuccessful\n" + ex.Message,"Upload Failed", MessageBoxButtons.OK,MessageBoxIcon.Error);
-            //}
-=======
-            strRemoteFilePath += "/" + strFileName;
-            try
-            {
-                ftpClient.upload(strRemoteFilePath, strLocalFile);
-                ftpClient = null;
-                MessageBox.Show("Successful upload of " + strFileName);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("File Upload Unsuccessful\n" + ex.Message,"Upload Failed", MessageBoxButtons.OK,MessageBoxIcon.Error);
-            }
->>>>>>> 16994318db460e2dfb0e86221d5063b3ce5f4c1d
         }
 
         private void remoteTreeView_AfterSelect(object sender, TreeViewEventArgs e)

@@ -113,16 +113,18 @@ namespace FTPClient
 
                 try
                 {
+                    int totalBytesSent = 0;
                     while (bytesSent != 0)
                     {
                         ftpStream.Write(byteBuffer, 0, bytesSent);
                         bytesSent = localFileStream.Read(byteBuffer, 0, bufferSize);
+                        totalBytesSent += bytesSent;
 
-                        int percentComplete = (int)((float)bytesSent / (float)bufferSize * 100);
+                        var percentComplete = totalBytesSent * 100.0 / localFileStream.Length;
                         if (percentComplete > highestPercentageReached)
                         {
-                            highestPercentageReached = percentComplete;
-                            worker.ReportProgress(percentComplete);
+                            highestPercentageReached = (int)percentComplete;
+                            worker.ReportProgress((int)percentComplete);
                         }
                     }
                 }
