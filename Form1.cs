@@ -81,6 +81,9 @@ namespace FTPClient
         {
             MessageBox.Show("File Upload Complete");
             progressBar1.Value = 0;
+            populateRemoteNode(remoteTreeView.SelectedNode.Parent);
+            remoteTreeView.SelectedNode.Parent.Expand();
+            remoteTreeView.Refresh();
         }
 
         private void uploadBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -99,7 +102,6 @@ namespace FTPClient
             ftp.upload(remoteFile,localFile, worker, e);
             ftp = null;
         }
-
 
         private void DisplayLocalFileTree()
         {
@@ -470,6 +472,8 @@ namespace FTPClient
                     else
                         ftpClient.deleteDirectory(strRemotePath);
 
+                    populateRemoteNode(remoteTreeView.SelectedNode.Parent);
+                    remoteTreeView.SelectedNode.Parent.Expand();
                     ftpClient = null;
                     remoteTreeView.Refresh();
                 }
